@@ -24,7 +24,7 @@ export default function Hero() {
 
       <div className="hero-sub">
         <p>
-          BLacklight makes <span className="hi">elevated genre films with Black leads</span> —
+          BLacklight makes <span className="hi">elevated genre films for the culture</span> —
           action, thriller, drama — built at the intersection of cinema and technology.{' '}
           <span className="secret">Move the light. We hid something down here.</span>
         </p>

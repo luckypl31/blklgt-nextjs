@@ -19,6 +19,7 @@ export default function Footer() {
           <Link href="/#tour">Tour</Link>
           <Link href="/#about">About</Link>
           <Link href="/#insider">Insider</Link>
+          <Link href="/contact">Contact</Link>
           <a href={SITE.instagram}>Instagram</a>
         </nav>
       </div>

@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/#tour', label: 'Tour' },
   { href: '/#about', label: 'About' },
   { href: '/#insider', label: 'Insider' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Nav() {

@@ -11,7 +11,7 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.blklgt.com',
   tagline: 'Elevated genre cinema.',
   description:
-    'BLacklight makes elevated genre films with Black leads — action, thriller, drama — built at the intersection of cinema and technology.',
+    'BLacklight makes elevated genre films for the cultue— action, thriller, drama — built at the intersection of cinema and technology.',
   instagram: 'https://www.instagram.com/blklgtofficial/',
   campaign: 'https://wildcardslive.com',
 } as const;
