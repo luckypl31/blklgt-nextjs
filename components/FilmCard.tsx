@@ -20,16 +20,24 @@ export default function FilmCard({ film, priority }: { film: Film; priority?: bo
       <Link href={`/films/${film.slug}`} aria-label={`${film.title}, ${film.year}`}>
         <div className="plate">
           <span className={`chip${isNow ? ' now' : ''}`}>{chipText(film)}</span>
-          {poster && (
+          {poster ? (
+            // Poster art already shows the title — overlaying our own text on
+            // top just blocks part of the artwork. alt carries the name
+            // instead of a visible <h3>.
             <Image
               src={poster}
-              alt=""
+              alt={film.title}
               fill
               sizes="(max-width: 700px) 80vw, 380px"
               priority={priority}
             />
+          ) : (
+            // No art yet: center the title like a placeholder one-sheet, so
+            // the card still reads as "a poster," just an unfinished one.
+            <div className="plate-title-center">
+              <h3 className="ftitle">{film.title}</h3>
+            </div>
           )}
-          <h3 className="ftitle">{film.title}</h3>
           <p className="fmeta">
             {film.year}
             {film.genre && (

@@ -202,6 +202,15 @@ section{padding:clamp(80px,10vh,150px) var(--pad)}
 .plate > *{position:relative; z-index:2}
 .plate .ftitle{font-family:var(--font-display), serif; font-size:clamp(26px,2.6vw,38px); line-height:.95; letter-spacing:-.02em; margin:0}
 .plate .fmeta{margin:12px 0 0; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ash)}
+/* placeholder "poster" for a film with no art yet — title centered like a
+   temp one-sheet, so the card still reads as a poster rather than a blank
+   card. Higher specificity than ".plate > *" so position:absolute sticks. */
+.plate > .plate-title-center{
+  position:absolute; inset:0; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  padding:64px 22px 56px; text-align:center; pointer-events:none;
+}
+.plate > .plate-title-center .ftitle{opacity:.92}
 .chip{
   position:absolute; top:18px; left:18px; z-index:3;
   padding:5px 11px; border:1px solid rgba(237,233,225,.22); border-radius:999px;
