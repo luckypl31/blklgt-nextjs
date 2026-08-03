@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import {
-  collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp, orderBy, query,
+  collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp, writeBatch,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { adminDb, storage } from '@/lib/adminFirebase';
@@ -36,9 +36,18 @@ export default function FilmsAdmin() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    const q = query(collection(adminDb(), FILMS_PATH), orderBy('order', 'asc'));
-    return onSnapshot(q, (snap) => {
-      setFilms(snap.docs.map((d) => ({ ...d.data(), slug: d.id }) as Film));
+    // No server-side orderBy: Firestore's orderBy silently EXCLUDES any
+    // document missing that field, which would make a film with no `order`
+    // set simply vanish from this list instead of just sorting oddly. Fetch
+    // everything and sort client-side, the same way the public site does.
+    return onSnapshot(collection(adminDb(), FILMS_PATH), (snap) => {
+      const list = snap.docs.map((d) => ({ ...d.data(), slug: d.id }) as Film);
+      list.sort((a, b) => {
+        const ao = a.order ?? 999, bo = b.order ?? 999;
+        if (ao !== bo) return ao - bo;
+        return Number(b.year) - Number(a.year);
+      });
+      setFilms(list);
     }, (e) => setError(e.message));
   }, []);
 
@@ -49,7 +58,7 @@ export default function FilmsAdmin() {
   }
 
   function newFilm() {
-    setEditing({ ...BLANK });
+    setEditing({ ...BLANK, order: films.length });
     setAwardsText('');
     setError('');
   }
@@ -87,6 +96,33 @@ export default function FilmsAdmin() {
     }
   }
 
+  // Swaps `order` with the adjacent film in the currently displayed sort and
+  // writes both. Films with no order yet get one assigned from their current
+  // display position first, so a move always has real numbers to swap.
+  async function move(index: number, dir: -1 | 1) {
+    const other = index + dir;
+    if (other < 0 || other >= films.length) return;
+
+    const a = films[index];
+    const b = films[other];
+    const aOrder = a.order ?? index;
+    const bOrder = b.order ?? other;
+
+    setError('');
+    try {
+      const batch = writeBatch(adminDb());
+      batch.set(doc(adminDb(), FILMS_PATH, a.slug), { order: bOrder }, { merge: true });
+      batch.set(doc(adminDb(), FILMS_PATH, b.slug), { order: aOrder }, { merge: true });
+      await batch.commit();
+    } catch (e) {
+      setError(
+        e instanceof Error && e.message.includes('permission')
+          ? "You don't have access to reorder films. Ask Wes to grant your account the films role."
+          : 'Reorder failed.',
+      );
+    }
+  }
+
   async function uploadPoster(file: File) {
     setUploading(true);
     setError('');
@@ -114,20 +150,41 @@ export default function FilmsAdmin() {
         </div>
 
         <div style={{ display: 'grid', gap: 1, background: 'var(--hairline)' }}>
-          {films.map((f) => (
-            <button
+          {films.map((f, i) => (
+            <div
               key={f.slug}
-              onClick={() => edit(f)}
               style={{
-                display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px',
+                display: 'flex', gap: 8, alignItems: 'center', padding: '10px 14px',
                 background: editing?.slug === f.slug ? 'rgba(110,59,255,.1)' : 'var(--ink)',
-                textAlign: 'left',
               }}
             >
-              <span style={{ fontFamily: 'var(--font-display),serif', fontSize: 16 }}>{f.title}</span>
-              <span style={{ color: 'var(--ash)', fontSize: 12 }}>{f.year}</span>
-              <span className="label" style={{ marginLeft: 'auto' }}>{chipText(f)}</span>
-            </button>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <button
+                  onClick={() => move(i, -1)}
+                  disabled={i === 0}
+                  aria-label={`Move ${f.title} up`}
+                  style={{ opacity: i === 0 ? 0.25 : 1, lineHeight: 1, fontSize: 12, color: 'var(--ash)' }}
+                >
+                  ▲
+                </button>
+                <button
+                  onClick={() => move(i, 1)}
+                  disabled={i === films.length - 1}
+                  aria-label={`Move ${f.title} down`}
+                  style={{ opacity: i === films.length - 1 ? 0.25 : 1, lineHeight: 1, fontSize: 12, color: 'var(--ash)' }}
+                >
+                  ▼
+                </button>
+              </div>
+              <button
+                onClick={() => edit(f)}
+                style={{ display: 'flex', gap: 12, alignItems: 'center', flex: 1, textAlign: 'left' }}
+              >
+                <span style={{ fontFamily: 'var(--font-display),serif', fontSize: 16 }}>{f.title}</span>
+                <span style={{ color: 'var(--ash)', fontSize: 12 }}>{f.year}</span>
+                <span className="label" style={{ marginLeft: 'auto' }}>{chipText(f)}</span>
+              </button>
+            </div>
           ))}
           {!films.length && <p style={{ color: 'var(--ash)', padding: 14 }}>No films yet.</p>}
         </div>
