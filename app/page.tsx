@@ -26,7 +26,7 @@ export default async function Home() {
         <div className="shead rv">
           <span className="label">The slate</span>
           <h2 className="display">
-            {films.length} film{films.length === 1 ? '' : 's'}. 4 The Culture.
+            {films.length} film{films.length === 1 ? '' : 's'}. 4 the culture.
           </h2>
           <span className="label count">
             01 — {String(films.length).padStart(2, '0')}
