@@ -58,7 +58,7 @@ export const FOUNDERS = [
 ] as const;
 
 export const MANIFESTO =
-  'We build real opportunity for people of color in front of and behind the camera — and we do it by making films that {make money.}';
+  'We build real opportunity for people of color in front of and behind the camera — and we do it by making {commerical} films that matter.';
 
 export const STATS = [
   { value: '5',   label: 'Films in the current cycle' },
