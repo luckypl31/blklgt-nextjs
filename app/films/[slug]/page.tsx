@@ -22,13 +22,22 @@ export async function generateMetadata(
   if (!film) return { title: 'Not found' };
 
   const poster = mediaUrl(film.poster);
+  // Explicit fallback rather than leaving this to metadata-merge behavior —
+  // a poster-less film should still get a real preview image, not an assumed
+  // inherited one.
+  const previewImage = poster ?? '/og-image.jpg';
+
   return {
     title: `${film.title} (${film.year})`,
     description: film.logline ?? `${film.title} — a BLacklight film.`,
     openGraph: {
       title: `${film.title} (${film.year})`,
       description: film.logline ?? '',
-      images: poster ? [poster] : undefined,
+      images: [{ url: previewImage, width: poster ? undefined : 1200, height: poster ? undefined : 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [previewImage],
     },
   };
 }
