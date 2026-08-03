@@ -1,0 +1,148 @@
+rules_version = '2';
+
+// ===========================================================================
+// blklgt.com + iamwesmiller.com share one Firestore project.
+//
+// The two sites are NOT equally trusted with the same data:
+//   - `films` is shared. Both sites read it. Marketing needs to edit it.
+//   - `content`, `quotes`, `scripts`, `log` are Wes's personal site. Nobody
+//     else should be able to touch a draft screenplay or an unpublished post.
+//   - `insiders` is the mailing list. Nobody reads it from a browser, ever.
+//
+// So permission is per-collection and stored as DATA, in roles/{uid}, rather
+// than as a hardcoded UID list. Adding Andrew is then one document, not a
+// rules edit and a redeploy.
+//
+// Deploy:  firebase deploy --only firestore:rules
+// ===========================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------
+    // Identity
+    // -------------------------------------------------------------------
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Bootstrap. This is the ONE hardcoded UID, and it exists only so there's
+    // someone who can create the first roles/ document — otherwise nobody can
+    // grant anybody anything and you're locked out of your own project.
+    // Firebase console -> Authentication -> Users -> User UID column.
+    function isOwner() {
+      return signedIn() && request.auth.uid == 'WeFedm31jYX18B0zJ9aeCPIrAQ32';
+    }
+
+    function roleDoc() {
+      return get(/databases/$(database)/documents/roles/$(request.auth.uid)).data;
+    }
+
+    // exists() first — roleDoc() on a missing document throws and denies the
+    // whole request, which reads like a mystery permission error.
+    function hasRole(role) {
+      return signedIn()
+          && (isOwner()
+              || (exists(/databases/$(database)/documents/roles/$(request.auth.uid))
+                  && roleDoc().get(role, false) == true));
+    }
+
+    // -------------------------------------------------------------------
+    // roles/{uid} — who can do what
+    //
+    // A role document looks like:
+    //   roles/AbC123...   { name: 'Andrew', films: true }
+    //
+    // Flags: films, insiders, personal.
+    // Grant the narrowest thing that does the job. Marketing gets `films`.
+    // -------------------------------------------------------------------
+    match /roles/{uid} {
+      // You can read your own role, so an admin UI can show what you may edit.
+      allow read: if isOwner() || (signedIn() && request.auth.uid == uid);
+      // Only the owner hands out permissions. Nobody promotes themselves.
+      allow write: if isOwner();
+    }
+
+    // -------------------------------------------------------------------
+    // films — THE SHARED COLLECTION
+    // Public read: both sites render it, and it needs to be crawlable.
+    // Write: owner, or anyone with the `films` role.
+    // -------------------------------------------------------------------
+    match /films/{slug} {
+      allow read: if true;
+
+      allow create, update: if hasRole('films')
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.sites is list
+        && request.resource.data.sites.size() > 0;
+
+      // Deleting a film takes down a live URL. Owner only.
+      allow delete: if isOwner();
+    }
+
+    // -------------------------------------------------------------------
+    // iamwesmiller.com's own content.
+    // The `films` role does NOT reach any of this — that's the entire point
+    // of splitting the roles. Marketing can update the slate without being
+    // able to read an unpublished log entry or a script in development.
+    // -------------------------------------------------------------------
+    match /content/{doc} {
+      allow read: if true;
+      allow write: if hasRole('personal');
+    }
+
+    match /quotes/{doc} {
+      allow read: if true;
+      allow write: if hasRole('personal');
+    }
+
+    match /log/{doc} {
+      // Drafts stay invisible until published.
+      allow read: if resource.data.status == 'published' || hasRole('personal');
+      allow write: if hasRole('personal');
+    }
+
+    match /scripts/{doc} {
+      // Unproduced screenplays are not public. Read is gated too.
+      allow read, write: if hasRole('personal');
+    }
+
+    // -------------------------------------------------------------------
+    // insiders — the mailing list
+    //
+    // Create-only from the client, and the shape is pinned so a signup can't
+    // smuggle in extra fields. No public read at any level: a scraper cannot
+    // pull the list out of the site, and neither can someone holding only the
+    // `films` role. Export it with the Admin SDK.
+    // -------------------------------------------------------------------
+    match /insiders/{email} {
+      allow create: if request.resource.data.keys().hasOnly(
+                         ['email', 'code', 'referredBy', 'source', 'createdAt'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('.+@.+\\..+')
+                    && request.resource.data.email.size() < 254;
+
+      allow read, update, delete: if hasRole('insiders');
+    }
+
+    // Referral codes are readable so a landing page can validate one before
+    // showing the Vault. Counters are incremented server-side only.
+    match /referralCodes/{code} {
+      allow read: if true;
+      allow write: if hasRole('insiders');
+    }
+
+    // -------------------------------------------------------------------
+    // Legacy path. iamwesmiller.com still reads this until it's cut over to
+    // films/{slug}. Delete this block AND the collection once it is.
+    // -------------------------------------------------------------------
+    match /artifacts/{appId}/public/data/{document=**} {
+      allow read: if true;
+      allow write: if hasRole('personal');
+    }
+
+    // Anything not matched above is denied. There is no catch-all.
+  }
+}

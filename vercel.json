@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    { "source": "/about-momentum", "destination": "/#about", "permanent": true },
+    { "source": "/contact-momentum", "destination": "/#insider", "permanent": true },
+    { "source": "/films/callherking", "destination": "/films/call-her-king", "permanent": true },
+    { "source": "/films/blackheat", "destination": "/films/black-heat", "permanent": true },
+    { "source": "/films/wildcards-2026", "destination": "/films/wildcards", "permanent": true },
+    { "source": "/insider", "destination": "/#insider", "permanent": true },
+    { "source": "/privacypolicy", "destination": "/privacy", "permanent": true }
+  ]
+}
