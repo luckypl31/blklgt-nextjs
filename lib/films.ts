@@ -101,7 +101,10 @@ export function chipText(film: Film): string {
  */
 export function mediaUrl(path?: string): string | undefined {
   if (!path) return undefined;
-  if (path.startsWith('http')) return path;
+  // Absolute URL or a same-origin public/ path (e.g. '/people/wes.jpg') pass
+  // through untouched — next/image needs the literal path for those, not a
+  // Storage lookup.
+  if (path.startsWith('http') || path.startsWith('/')) return path;
   return `https://firebasestorage.googleapis.com/v0/b/${STORAGE_BUCKET}/o/${encodeURIComponent(path)}?alt=media`;
 }
 
@@ -121,6 +124,8 @@ function sortFilms(films: Film[]): Film[] {
  * during `next build` is not an acceptable failure mode — especially with a
  * theatrical release on the calendar.
  */
+
+
 
 
 export async function getFilms(db: Firestore, site: SiteKey = 'blacklight'): Promise<Film[]> {

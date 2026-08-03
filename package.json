@@ -11,7 +11,9 @@
     "migrate": "tsx scripts/migrate-admin.ts",
     "migrate:admin": "tsx scripts/migrate-admin.ts",
     "migrate:user": "tsx scripts/migrate-films.ts",
-    "grant": "tsx scripts/grant-role.ts"
+    "grant": "tsx scripts/grant-role.ts",
+    "check": "tsx scripts/check.ts",
+    "seed:content": "tsx scripts/seed-content.ts"
   },
   "dependencies": {
     "firebase": "^11.1.0",

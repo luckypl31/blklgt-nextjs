@@ -12,7 +12,7 @@ export default function Privacy() {
 
       <div style={{ color: '#B6B2AB', display: 'grid', gap: 20 }}>
         <p>
-          If you join the BLKLGT we store your email address and the referral code
+          If you join the Blacklight Society we store your email address and the referral code
           issued to you. That&rsquo;s it. We use it to send screening invites, trailers, and
           release news.
         </p>

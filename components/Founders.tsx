@@ -1,24 +1,27 @@
-import Image from 'next/image';
-import { FOUNDERS } from '@/lib/site';
+import BioCard from './BioCard';
+import { db } from '@/lib/firebase';
+import { getBios } from '@/lib/bios';
 
-export default function Founders() {
+export default async function Founders() {
+  const bios = await getBios(db());
+
   return (
-    <section>
+    <section id="about">
       <div className="shead rv">
         <span className="label">Founders</span>
         <h2 className="display">Two people, one bet.</h2>
       </div>
-      <div className="people">
-        {FOUNDERS.map((p) => (
-          <article className="person rv" key={p.name}>
-            <figure data-initials={p.name.split(' ').map((w) => w[0]).join('')}>
-              <Image src={p.photo} alt={p.name} fill sizes="(max-width: 900px) 100vw, 46vw" />
-            </figure>
-            <h3>{p.name}</h3>
-            <p>{p.bio}</p>
-          </article>
-        ))}
-      </div>
+
+      {bios.length ? (
+        <div className="people">
+          {bios.map((b) => <BioCard key={b.slug} bio={b} />)}
+        </div>
+      ) : (
+        <div className="empty">
+          <b>No bios published yet.</b>
+          Add one in the admin console.
+        </div>
+      )}
     </section>
   );
 }

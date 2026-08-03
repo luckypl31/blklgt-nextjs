@@ -44,10 +44,10 @@ export default function Insider({ referredBy }: { referredBy?: string }) {
 
   return (
     <section className="insider" id="insider">
-      <span className="label">The Blacklight Inisder</span>
+      <span className="label">The Blacklight Society</span>
       <h2>First look. First seat.</h2>
       <p>
-        Sign up for exclusive access to trailers before they&rsquo;re public, test screenings, screening invites in your city, and the occasional
+        Trailers before they&rsquo;re public, screening invites in your city, and the occasional
         thing we can&rsquo;t put anywhere else. No noise.
       </p>
 

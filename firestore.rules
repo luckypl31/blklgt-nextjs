@@ -83,14 +83,42 @@ service cloud.firestore {
     }
 
     // -------------------------------------------------------------------
+    // tour — stop list for the current tour, plus the fallback content shown
+    // when it's empty. Same `films` role as the slate: this is company-site
+    // work, the same people who update Films update Tour.
+    // -------------------------------------------------------------------
+    match /tour/{id} {
+      allow read: if true;
+      allow write: if hasRole('films');
+    }
+
+    // -------------------------------------------------------------------
+    // bios — founder bios. Also gated on `films`, not `personal` — Andrew's
+    // bio lives here and Andrew is not going to have `personal` access to
+    // Wes's screenplay drafts. This collection is company-site content,
+    // scoped the same as films and tour.
+    // -------------------------------------------------------------------
+    match /bios/{slug} {
+      allow read: if true;
+      allow write: if hasRole('films');
+    }
+
+    // -------------------------------------------------------------------
     // iamwesmiller.com's own content.
     // The `films` role does NOT reach any of this — that's the entire point
     // of splitting the roles. Marketing can update the slate without being
     // able to read an unpublished log entry or a script in development.
     // -------------------------------------------------------------------
+    // content/{doc} is shared by personal docs (bio — legacy) and one
+    // company doc (tourMeta). IMPORTANT: Firestore evaluates every match
+    // block that matches a path and grants access if ANY of them allows it
+    // — this is a union, not "most specific wins." Two separate match blocks
+    // for the same path (one gated on `personal`, one on `films`) would mean
+    // EITHER role can write EITHER doc, not the isolation the names imply.
+    // So this is one rule with an explicit branch, not two rules.
     match /content/{doc} {
       allow read: if true;
-      allow write: if hasRole('personal');
+      allow write: if doc == 'tourMeta' ? hasRole('films') : hasRole('personal');
     }
 
     match /quotes/{doc} {
@@ -132,6 +160,24 @@ service cloud.firestore {
     match /referralCodes/{code} {
       allow read: if true;
       allow write: if hasRole('insiders');
+    }
+
+    // -------------------------------------------------------------------
+    // messages — contact form submissions. Same shape as insiders: create-
+    // only from the client with a pinned field list, no public read. Gated
+    // on the `insiders` role since both are "people trying to reach us" data
+    // and are typically reviewed by the same person.
+    // -------------------------------------------------------------------
+    match /messages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(
+                         ['name', 'email', 'message', 'source', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('.+@.+\\..+')
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() < 5000;
+
+      allow read, update, delete: if hasRole('insiders');
     }
 
     // -------------------------------------------------------------------

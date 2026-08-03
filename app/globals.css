@@ -406,3 +406,28 @@ html.js .rv.on{opacity:1; transform:none}
   .film-hero .poster{max-width:300px}
   .credit{grid-template-columns:1fr; gap:4px}
 }
+
+/* ===========================================================
+   Bio expand-in-place
+   =========================================================== */
+.bio-expand{
+  overflow:hidden; transition:height .5s var(--ease);
+}
+.bio-full{padding-top:16px}
+.bio-full p{margin:0 0 14px; color:#9C98A6; font-size:14px; line-height:1.65}
+.bio-full p:last-child{margin-bottom:0}
+.bio-toggle{
+  display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+  font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--ash);
+  transition:color .25s;
+}
+.bio-toggle:hover{color:var(--uv-hi)}
+.bio-toggle span{font-family:var(--font-display),serif; font-size:16px; line-height:1}
+
+/* ===========================================================
+   Tour fallback state — shown when there are no upcoming stops
+   =========================================================== */
+.tour-fallback{
+  border:1px dashed var(--hairline); padding:clamp(32px,5vw,56px); max-width:60ch;
+}
+.tour-fallback p{color:#9C98A6; font-size:16px; line-height:1.6; margin:0}
