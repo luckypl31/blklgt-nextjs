@@ -5,19 +5,14 @@ import { firebaseConfig } from '@/lib/firebase';
 
 export const runtime = 'nodejs';
 
-/**
- * Referral codes match the BLK- format already in use by the Society signup
- * flow, so codes issued here and codes issued there are interchangeable.
- */
-function makeCode(): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/0/1 — people read these aloud on tour
-  let out = '';
-  for (let i = 0; i < 6; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  return `BLK-${out}`;
-}
+// Plain newsletter signup — no referral code. This used to mint its own
+// BLK- codes, independent of the real Society membership system
+// (Supabase-backed, blklightsociety.com), so the code never actually did
+// anything — no Vault access, no referral tracking. That promise is gone;
+// this collection is just an email list now.
 
 export async function POST(req: Request) {
-  let body: { email?: string; referredBy?: string; source?: string };
+  let body: { email?: string; source?: string };
   try {
     body = await req.json();
   } catch {
@@ -38,19 +33,16 @@ export async function POST(req: Request) {
   try {
     const existing = await getDoc(ref);
     if (existing.exists()) {
-      return NextResponse.json({ ok: true, code: existing.data().code ?? null, existing: true });
+      return NextResponse.json({ ok: true, existing: true });
     }
 
-    const code = makeCode();
     await setDoc(ref, {
       email,
-      code,
-      referredBy: body.referredBy ?? null,
       source: body.source ?? 'blklgt.com',
       createdAt: new Date().toISOString(),
     });
 
-    return NextResponse.json({ ok: true, code });
+    return NextResponse.json({ ok: true });
   } catch (e) {
     console.error('[insider]', e);
     // Never leak the underlying Firestore message to the browser.

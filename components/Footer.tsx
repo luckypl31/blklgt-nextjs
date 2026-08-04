@@ -17,10 +17,12 @@ export default function Footer() {
         <nav>
           <Link href="/films">Films</Link>
           <Link href="/#tour">Tour</Link>
+          <a href={SITE.onDemand} target="_blank" rel="noopener noreferrer">Watch</a>
           <Link href="/#about">About</Link>
-          <Link href="/#insider">Insider</Link>
+          <Link href="/#insider">Newsletter</Link>
+          <a href={SITE.society} target="_blank" rel="noopener noreferrer">Society</a>
           <Link href="/contact">Contact</Link>
-          <a href={SITE.instagram}>Instagram</a>
+          <a href={SITE.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
         </nav>
       </div>
       <div className="legal">

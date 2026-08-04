@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { SITE } from '@/lib/site';
 
 const LINKS = [
   { href: '/films', label: 'Films' },
   { href: '/#tour', label: 'Tour' },
+  { href: SITE.onDemand, label: 'Watch', external: true },
   { href: '/#about', label: 'About' },
-  { href: '/#insider', label: 'Insider' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -48,7 +49,11 @@ export default function Nav() {
       <ul id="navlist" className={open ? 'open' : undefined}>
         {LINKS.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} onClick={() => setOpen(false)}>
+            <Link
+              href={l.href}
+              onClick={() => setOpen(false)}
+              {...('external' in l && l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
               {l.label}
             </Link>
           </li>

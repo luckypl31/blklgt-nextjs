@@ -1,18 +1,24 @@
 'use client';
 
-// The signup goes through /api/insider rather than writing to Firestore from
-// the browser. Two reasons: the referral code lives server-side so it can't be
-// forged from devtools, and it gives one place to add rate limiting when the
-// tour starts pushing traffic here.
+// A plain newsletter signup — nothing more. This used to promise a referral
+// code and "Vault access," but that code was minted independently in
+// Firestore and never actually connected to the real Society membership
+// (Supabase-backed, at blklightsociety.com) — so the promise was hollow.
+// Two honest tiers now: this box collects an email for updates; the link
+// below is the one real path to the fuller membership.
+//
+// Posts through /api/insider rather than writing to Firestore from the
+// browser, so there's one place to add rate limiting later.
 
 import { useState } from 'react';
+import { SITE } from '@/lib/site';
 
 type State = 'idle' | 'sending' | 'done' | 'error';
 
-export default function Insider({ referredBy }: { referredBy?: string }) {
+export default function Insider() {
   const [email, setEmail] = useState('');
   const [state, setState] = useState<State>('idle');
-  const [note, setNote] = useState('Referral codes get you into The Vault.');
+  const [note, setNote] = useState('One or two emails a month. Unsubscribe anytime.');
 
   async function submit() {
     if (!/.+@.+\..+/.test(email)) {
@@ -25,17 +31,13 @@ export default function Insider({ referredBy }: { referredBy?: string }) {
       const res = await fetch('/api/insider', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, referredBy, source: 'blklgt.com' }),
+        body: JSON.stringify({ email, source: 'blklgt.com' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Signup failed.');
       setEmail('');
       setState('done');
-      setNote(
-        data.code
-          ? `You're in. Your referral code is ${data.code} — share it and you both get Vault access.`
-          : "You're in. Check your inbox.",
-      );
+      setNote("You're in. Check your inbox.");
     } catch (e) {
       setState('error');
       setNote(e instanceof Error ? e.message : 'Something went wrong. Try again.');
@@ -44,11 +46,10 @@ export default function Insider({ referredBy }: { referredBy?: string }) {
 
   return (
     <section className="insider" id="insider">
-      <span className="label">BLACKLIGHT INSIDERS</span>
-      <h2>First look. First seat.</h2>
+      <span className="label">Newsletter</span>
+      <h2>Stay in the loop.</h2>
       <p>
-        Exclsuive access to trailers before they&rsquo;re public, screening invites in your city, and the occasional
-        thing we can&rsquo;t put anywhere else. No noise. If you want a deeper dive into history of cinema, visit us at the society: https://blklightsociety.com
+        Release dates, trailers, and tour stops — straight to your inbox, nothing else.
       </p>
 
       <div className="form">
@@ -80,6 +81,14 @@ export default function Insider({ referredBy }: { referredBy?: string }) {
         }}
       >
         {note}
+      </p>
+
+      <p className="society-cta">
+        Want more than emails?{' '}
+        <a href={SITE.society} target="_blank" rel="noopener noreferrer">
+          Join the Blacklight Society
+        </a>{' '}
+        — early access, the Vault, referral rewards.
       </p>
     </section>
   );

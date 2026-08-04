@@ -11,9 +11,15 @@ export const SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.blklgt.com',
   tagline: 'Elevated genre cinema.',
   description:
-    'BLacklight makes elevated genre films for the cultue— action, thriller, drama — built at the intersection of cinema and technology.',
+    'BLacklight makes elevated genre films with Black leads — action, thriller, drama — built at the intersection of cinema and technology.',
   instagram: 'https://www.instagram.com/blklgtofficial/',
   campaign: 'https://wildcardslive.com',
+  // The Blacklight Society — the real membership tier (Vault access,
+  // referral rewards, leaderboard), lives on its own domain/backend.
+  // blklgt.com's own "Insider" box is just a plain newsletter; this is the
+  // one link that actually leads to that fuller thing.
+  society: 'https://blklightsociety.com/join',
+  onDemand: 'https://blklightsociety.com/ondemand',
 } as const;
 
 export const TICKER: string[] = [
@@ -25,7 +31,7 @@ export const TICKER: string[] = [
 ];
 
 export const MANIFESTO =
-  'We build real opportunity for people of color in front of and behind the camera — and we do it by making {commercial} films that matter.';
+  'We build real opportunity for people of color in front of and behind the camera — and we do it by making films that {make money.}';
 
 export const STATS = [
   { value: '5',   label: 'Films in the current cycle' },
