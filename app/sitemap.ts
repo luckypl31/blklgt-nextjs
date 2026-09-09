@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: SITE.url, priority: 1 },
     { url: `${SITE.url}/films`, priority: 0.8 },
+    { url: `${SITE.url}/press`, priority: 0.6 },
     ...films.map((f) => ({ url: `${SITE.url}/films/${f.slug}`, priority: 0.7 })),
   ];
 }

@@ -11,6 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/films" className="label">Films</Link>
           <Link href="/admin/tour" className="label">Tour</Link>
           <Link href="/admin/bios" className="label">Bios</Link>
+          <Link href="/admin/press" className="label">Press</Link>
           <Link href="/" className="label" style={{ marginLeft: 'auto' }}>View site →</Link>
         </nav>
         <div style={{ padding: '32px 0 80px' }}>{children}</div>

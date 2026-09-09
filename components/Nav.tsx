@@ -6,6 +6,7 @@ import { SITE } from '@/lib/site';
 
 const LINKS = [
   { href: '/films', label: 'Films' },
+  { href: '/press', label: 'Press' },
   { href: '/#tour', label: 'Tour' },
   { href: SITE.onDemand, label: 'Watch', external: true },
   { href: '/#about', label: 'About' },

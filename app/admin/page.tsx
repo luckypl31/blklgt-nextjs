@@ -4,6 +4,7 @@ const CARDS = [
   { href: '/admin/films', title: 'Films', body: 'Add, edit, or remove titles from the slate. Controls what shows on both blklgt.com and iamwesmiller.com.' },
   { href: '/admin/tour', title: 'Tour', body: 'Manage tour stops. When the list is empty, the site shows a designed fallback instead of a blank section — edit that here too.' },
   { href: '/admin/bios', title: 'Bios', body: 'Short and full bios for Wes and Andrew. The short version shows by default; the full one expands in place.' },
+  { href: '/admin/press', title: 'Press', body: 'Press mentions for the trophy room. Awards come from each film\u2019s own record — edit those in Films, not here.' },
 ];
 
 export default function AdminHome() {

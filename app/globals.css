@@ -446,3 +446,95 @@ html.js .rv.on{opacity:1; transform:none}
   border:1px dashed var(--hairline); padding:clamp(32px,5vw,56px); max-width:60ch;
 }
 .tour-fallback p{color:#9C98A6; font-size:16px; line-height:1.6; margin:0}
+
+/* ===========================================================
+   Press page — the trophy room.
+   Same vocabulary as the rest of the site: dark plates, a violet
+   glow that reads as gallery light, hairline framing. Nothing here
+   is a stock trophy icon — the medal is two rings and a sparkle,
+   award names carry the weight, not clip art.
+   =========================================================== */
+.press-hero{
+  position:relative; overflow:hidden; text-align:center;
+  padding:clamp(140px,18vh,200px) var(--pad) clamp(60px,8vh,90px);
+}
+.press-hero::before{
+  content:""; position:absolute; left:50%; top:30%; width:min(1000px,140vw); aspect-ratio:1;
+  transform:translate(-50%,-50%); border-radius:50%;
+  background:radial-gradient(circle, rgba(110,59,255,.20), transparent 62%);
+  pointer-events:none;
+}
+.press-hero > *{position:relative}
+.press-hero h1{
+  font-size:clamp(42px,7vw,92px); margin:14px auto 20px; letter-spacing:-.03em; line-height:.98;
+}
+.press-intro{color:#9C98A6; max-width:52ch; margin:0 auto; font-size:clamp(15px,1.2vw,17px)}
+
+/* -- trophy case -- */
+.trophy-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:24px;
+}
+.trophy{
+  position:relative; text-align:center; padding:38px 22px 30px;
+  border:1px solid var(--hairline);
+  background:linear-gradient(163deg,#131318,#08080B 60%,#101016);
+  transition:transform .5s var(--ease), border-color .4s;
+}
+.trophy:hover{transform:translateY(-6px); border-color:#3A2E5C}
+.trophy-medal{
+  position:relative; width:56px; height:56px; margin:0 auto 20px; color:var(--bone);
+  transition:color .4s;
+}
+.trophy-medal::before{
+  content:""; position:absolute; left:50%; top:50%; width:140px; height:140px;
+  transform:translate(-50%,-50%); border-radius:50%;
+  background:radial-gradient(circle, rgba(110,59,255,.35), transparent 70%);
+  opacity:0; transition:opacity .5s var(--ease); pointer-events:none;
+}
+.trophy:hover .trophy-medal{color:var(--uv-hi)}
+.trophy:hover .trophy-medal::before{opacity:1}
+.trophy h3{
+  font-family:var(--font-display),serif; font-weight:500; font-size:18px;
+  line-height:1.25; margin:0 0 6px; position:relative;
+}
+.trophy-sub{font-size:12px; letter-spacing:.1em; color:var(--ash); margin:0 0 16px; position:relative}
+.trophy-film{
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--uv-hi);
+  border-bottom:1px solid currentColor; position:relative; transition:opacity .25s;
+}
+.trophy-film:hover{opacity:.7}
+
+/* -- as seen in -- */
+.press-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px;
+}
+.press-card{
+  position:relative; display:flex; flex-direction:column; min-height:180px;
+  padding:30px 28px 26px; border:1px solid var(--hairline); background:var(--ink-2);
+}
+.press-card::before{
+  content:""; position:absolute; top:0; left:28px; right:28px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--uv) 50%, transparent);
+  opacity:.5;
+}
+.press-outlet{
+  font-family:var(--font-display),serif; font-weight:700; font-size:21px;
+  letter-spacing:-.01em; margin-bottom:14px;
+}
+.press-quote{
+  font-family:var(--font-display),serif; font-style:italic; font-size:15.5px;
+  line-height:1.55; color:#C6C2BB; flex:1; margin:0 0 18px;
+}
+.press-quote::before{content:"\201C"}
+.press-quote::after{content:"\201D"}
+.press-link{
+  font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--uv-hi); margin-top:auto; align-self:flex-start;
+  border-bottom:1px solid currentColor; transition:opacity .25s;
+}
+.press-link:hover{opacity:.7}
+
+.press-cta{
+  text-align:center; padding:0 var(--pad) clamp(70px,9vh,110px); color:#6E6C76; font-size:14px;
+}
+.press-cta a{color:var(--uv-hi); border-bottom:1px solid currentColor}

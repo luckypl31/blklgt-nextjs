@@ -16,6 +16,7 @@ export default function Footer() {
         </div>
         <nav>
           <Link href="/films">Films</Link>
+          <Link href="/press">Press</Link>
           <Link href="/#tour">Tour</Link>
           <a href={SITE.onDemand} target="_blank" rel="noopener noreferrer">Watch</a>
           <Link href="/#about">About</Link>
