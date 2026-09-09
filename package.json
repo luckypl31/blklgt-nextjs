@@ -13,7 +13,8 @@
     "migrate:user": "tsx scripts/migrate-films.ts",
     "grant": "tsx scripts/grant-role.ts",
     "check": "tsx scripts/check.ts",
-    "seed:content": "tsx scripts/seed-content.ts"
+    "seed:content": "tsx scripts/seed-content.ts",
+    "seed:press": "tsx scripts/seed-press.ts"
   },
   "dependencies": {
     "firebase": "^11.1.0",

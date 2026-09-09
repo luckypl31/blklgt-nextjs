@@ -31,6 +31,14 @@ export default async function PressPage() {
         </p>
       </section>
 
+      <section id="coverage">
+        <div className="shead rv">
+          <span className="label">As seen in</span>
+          <h2 className="display">What they&rsquo;re saying.</h2>
+        </div>
+        <PressWall mentions={press} />
+      </section>
+
       <section id="awards">
         <div className="shead rv">
           <span className="label">Awards</span>
@@ -38,14 +46,6 @@ export default async function PressPage() {
           <span className="label count">{String(trophies.length).padStart(2, '0')} to date</span>
         </div>
         <TrophyWall trophies={trophies} />
-      </section>
-
-      <section id="coverage">
-        <div className="shead rv">
-          <span className="label">As seen in</span>
-          <h2 className="display">What they&rsquo;re saying.</h2>
-        </div>
-        <PressWall mentions={press} />
       </section>
 
       <section className="press-cta rv">
