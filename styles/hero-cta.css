@@ -1,0 +1,44 @@
+/* Add to the blklgt global stylesheet.
+   These sit outside the beam mask on purpose: always lit, always readable.
+   Cream matches the store's primary button, so the click lands somewhere
+   that looks like the same brand. */
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-cta-primary {
+  display: inline-block;
+  padding: 15px 26px;
+  background: #EDE3C8;
+  color: #0B0A08;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.hero-cta-primary:hover { background: #ffffff; }
+
+.hero-cta-secondary {
+  color: #EDE3C8;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+.hero-cta-secondary:hover { text-decoration-thickness: 2px; }
+
+.hero-cta a:focus-visible {
+  outline: 2px solid #EDE3C8;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-primary { transition: none; }
+}

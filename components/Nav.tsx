@@ -2,13 +2,16 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { SITE } from '@/lib/site';
+import { storeLink } from '@/lib/store-links';
 
+/* CHANGED: "Watch" is now "Watch & Shop" and opens in the same tab.
+   A new tab split visitors across two windows right when they were
+   deciding to buy, and on phones it was easy to lose the way back. */
 const LINKS = [
   { href: '/films', label: 'Films' },
   { href: '/press', label: 'Press' },
   { href: '/#tour', label: 'Tour' },
-  { href: SITE.onDemand, label: 'Watch', external: true },
+  { href: storeLink(null, 'nav'), label: 'Watch & Shop' },
   { href: '/#about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -49,12 +52,8 @@ export default function Nav() {
 
       <ul id="navlist" className={open ? 'open' : undefined}>
         {LINKS.map((l) => (
-          <li key={l.href}>
-            <Link
-              href={l.href}
-              onClick={() => setOpen(false)}
-              {...('external' in l && l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >
+          <li key={l.label}>
+            <Link href={l.href} onClick={() => setOpen(false)}>
               {l.label}
             </Link>
           </li>
