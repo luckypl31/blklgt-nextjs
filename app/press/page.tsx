@@ -5,7 +5,10 @@ import { db } from '@/lib/firebase';
 import { getFilms } from '@/lib/films';
 import { getPress, trophiesFromFilms } from '@/lib/press';
 
-export const revalidate = 300;
+// Read current Firestore data on every request so admin edits appear
+// when visitors open or reload the press page.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'Press',
